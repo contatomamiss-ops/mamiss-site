@@ -1,0 +1,91 @@
+name: Deploy Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DEFAULT_PROJECT_NAME: mamiss
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Preflight — detect publish mode
+        id: detect
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -f package.json ]; then
+            echo "mode=astro" >> "$GITHUB_OUTPUT"
+            echo "publish_dir=dist" >> "$GITHUB_OUTPUT"
+            echo "Modo detectado: Astro/source."
+          elif [ -f site-publicado/index.html ]; then
+            echo "mode=static" >> "$GITHUB_OUTPUT"
+            echo "publish_dir=site-publicado" >> "$GITHUB_OUTPUT"
+            echo "Modo detectado: snapshot estático."
+          else
+            echo "::error::Nenhuma estrutura publicável encontrada. Adicione o source Astro (package.json + src/) ou o snapshot completo em site-publicado/index.html."
+            exit 1
+          fi
+
+      - name: Preflight — block secrets in repo
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find . -path ./.git -prune -o \( -name '.env' -o -name '.env.*' -o -name 'lead-config.php' \) -print | grep -q .; then
+            echo "::error::Arquivo sensível encontrado no repositório (.env/lead-config.php). Remova antes de publicar."
+            exit 1
+          fi
+
+          if grep -RIn --exclude-dir=.git --exclude='deploy-cloudflare-pages.yml' -E 'cfut_|ghp_|github_pat_|sk-[A-Za-z0-9]|BREVO_API_KEY\s*=|api_key\s*[:=]' .; then
+            echo "::error::Possível segredo encontrado no repositório. Remova antes de publicar."
+            exit 1
+          fi
+
+      - name: Setup Node
+        if: steps.detect.outputs.mode == 'astro'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.detect.outputs.mode == 'astro'
+        shell: bash
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install
+          fi
+
+      - name: Build Astro
+        if: steps.detect.outputs.mode == 'astro'
+        run: npm run build
+
+      - name: Verify publish directory
+        shell: bash
+        run: |
+          set -euo pipefail
+          PUBLISH_DIR='${{ steps.detect.outputs.publish_dir }}'
+          test -d "$PUBLISH_DIR"
+          test -f "$PUBLISH_DIR/index.html"
+          echo "Publicando diretório: $PUBLISH_DIR"
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy ${{ steps.detect.outputs.publish_dir }} --project-name=${{ secrets.CLOUDFLARE_PROJECT_NAME || env.DEFAULT_PROJECT_NAME }} --branch=main
