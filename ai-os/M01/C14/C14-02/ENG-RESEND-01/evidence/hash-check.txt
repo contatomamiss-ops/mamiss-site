@@ -1,0 +1,6 @@
+functions/_lib/resend-core.js: OK
+functions/api/lead-confirm.js: OK
+functions/api/lead.php.js: OK
+functions/api/resend-webhook.js: OK
+migrations/0001_resend_leads.sql: OK
+tests/resend.test.mjs: OK
