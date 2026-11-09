@@ -1,0 +1,10 @@
+functions/_lib/rate-limit.js: OK
+functions/_lib/resend-core.js: OK
+functions/api/lead-confirm.js: OK
+functions/api/lead-unsubscribe.js: OK
+functions/api/lead.php.js: OK
+functions/api/resend-webhook.js: OK
+migrations/0001_resend_leads.sql: OK
+migrations/0002_security.sql: OK
+tests/original-regression.test.mjs: OK
+tests/security.test.mjs: OK
