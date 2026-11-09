@@ -1,0 +1,112 @@
+TAP version 13
+# Subtest: missing consent 422 without network
+ok 1 - missing consent 422 without network
+  ---
+  duration_ms: 26.862652
+  type: 'test'
+  ...
+# Subtest: name length 201 rejected
+ok 2 - name length 201 rejected
+  ---
+  duration_ms: 1.405699
+  type: 'test'
+  ...
+# Subtest: bad email rejected
+ok 3 - bad email rejected
+  ---
+  duration_ms: 1.614375
+  type: 'test'
+  ...
+# Subtest: successful send and duplicate deduplication
+ok 4 - successful send and duplicate deduplication
+  ---
+  duration_ms: 14.544582
+  type: 'test'
+  ...
+# Subtest: provider 400 is not success
+ok 5 - provider 400 is not success
+  ---
+  duration_ms: 4.275249
+  type: 'test'
+  ...
+# Subtest: provider 500 indeterminate no retry
+ok 6 - provider 500 indeterminate no retry
+  ---
+  duration_ms: 3.55953
+  type: 'test'
+  ...
+# Subtest: confirmation signed token and replay
+ok 7 - confirmation signed token and replay
+  ---
+  duration_ms: 2.778056
+  type: 'test'
+  ...
+# Subtest: invalid confirmation token rejected
+ok 8 - invalid confirmation token rejected
+  ---
+  duration_ms: 0.806118
+  type: 'test'
+  ...
+# Subtest: webhook unsigned rejected
+ok 9 - webhook unsigned rejected
+  ---
+  duration_ms: 1.115473
+  type: 'test'
+  ...
+# Subtest: method GET lead rejected
+ok 10 - method GET lead rejected
+  ---
+  duration_ms: 0.891715
+  type: 'test'
+  ...
+# Subtest: SEC01 GET does not confirm
+ok 11 - SEC01 GET does not confirm
+  ---
+  duration_ms: 28.754745
+  type: 'test'
+  ...
+# Subtest: SEC01 explicit POST consumes token
+ok 12 - SEC01 explicit POST consumes token
+  ---
+  duration_ms: 5.342073
+  type: 'test'
+  ...
+# Subtest: SEC01 expired token rejected
+ok 13 - SEC01 expired token rejected
+  ---
+  duration_ms: 1.614473
+  type: 'test'
+  ...
+# Subtest: SEC02 optout GET harmless and POST suppresses
+ok 14 - SEC02 optout GET harmless and POST suppresses
+  ---
+  duration_ms: 3.486021
+  type: 'test'
+  ...
+# Subtest: SEC03 concurrent persistent limits
+ok 15 - SEC03 concurrent persistent limits
+  ---
+  duration_ms: 2.089476
+  type: 'test'
+  ...
+# Subtest: SEC04 unsigned rejected
+ok 16 - SEC04 unsigned rejected
+  ---
+  duration_ms: 1.073176
+  type: 'test'
+  ...
+# Subtest: SEC04 signed accepted, altered rejected, timestamp expired
+ok 17 - SEC04 signed accepted, altered rejected, timestamp expired
+  ---
+  duration_ms: 3.550127
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 128.804371
